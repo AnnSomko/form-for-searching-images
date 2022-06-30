@@ -11,31 +11,3 @@ body {
   color: #212121;
   line-height: 1.5;
 }
-
-#search-box {
-  font: inherit;
-  padding: 8px;
-  max-width: 320px;
-  margin-bottom: 16px;
-}
-
-li {
-  margin-bottom: 10px;
-}
-
-img {
-  width: 30px;
-  height: 20px;
-}
-
-.country-list {
-  list-style-type: none;
-}
-
-.list_item {
-  display: inline-block;
-}
-
-h2 {
-  margin: 0;
-}
