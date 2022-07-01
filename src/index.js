@@ -22,6 +22,7 @@ function onSearch(e) {
   imagesApiService.fetchImages().then(hits => {
     clearImagesContainer();
     renderImagesMarkup(hits);
+    onSmoothSroll(hits);
     loadMore.hidden = false;
     if (hits.length === 0) {
       Notify.failure(
@@ -29,7 +30,7 @@ function onSearch(e) {
       );
       return;
     }
-    if (totalHits) {
+    if (hits.totalHits) {
       loadMore.hidden = true;
       Notify.failure(
         "We're sorry, but you've reached the end of search results."
@@ -45,28 +46,47 @@ function onLoadMore() {
 function renderImagesMarkup(hits) {
   const markup = hits
     .map(image => {
-      return `<div class="photo-card">
-    <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
-    <div class="info">
-      <p class="info-item">
-        <b>Likes ${image.likes}</b>
-      </p>
-      <p class="info-item">
-        <b>Views ${image.views}</b>
-      </p>
-      <p class="info-item">
-        <b>Comments ${image.comments}</b>
-      </p>
-      <p class="info-item">
-        <b>Downloads ${image.downloads}</b>
-      </p>
-    </div>
-  </div>`;
+      return `
+      <div class="photo-card">
+      <a class="" href='${image.largeImageURL}'>               
+        <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
+        </a>
+        <div class="info">
+          <p class="info-item">
+            <b>Likes ${image.likes}</b>
+          </p>
+          <p class="info-item">
+            <b>Views ${image.views}</b>
+          </p>
+          <p class="info-item">
+            <b>Comments ${image.comments}</b>
+          </p>
+          <p class="info-item">
+            <b>Downloads ${image.downloads}</b>
+          </p>
+        </div>
+      </div>`;
     })
     .join('');
   imagesContainer.innerHTML = markup;
+
+  let gallery = new SimpleLightbox('.gallery a', {
+    captionDelay: 250,
+  });
+  gallery.refresh();
 }
 
 function clearImagesContainer() {
   imagesContainer.innerHTML = '';
+}
+
+function onSmoothSroll(hits) {
+  const { height: cardHeight = hits.map(item => item.imageHeight) } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }
