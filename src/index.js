@@ -1,4 +1,7 @@
 import ImagesApiService from './imagesAPI';
+import { Notify } from 'notiflix';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 let searchForm = document.querySelector('#search-form');
 let imagesContainer = document.querySelector('.gallery');
@@ -6,6 +9,8 @@ let loadMore = document.querySelector('.load-more');
 
 searchForm.addEventListener('submit', onSearch);
 loadMore.addEventListener('click', onLoadMore);
+
+loadMore.hidden = true;
 
 const imagesApiService = new ImagesApiService();
 
@@ -17,6 +22,19 @@ function onSearch(e) {
   imagesApiService.fetchImages().then(hits => {
     clearImagesContainer();
     renderImagesMarkup(hits);
+    loadMore.hidden = false;
+    if (hits.length === 0) {
+      Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+      return;
+    }
+    if (totalHits) {
+      loadMore.hidden = true;
+      Notify.failure(
+        "We're sorry, but you've reached the end of search results."
+      );
+    }
   });
 }
 
@@ -27,7 +45,7 @@ function onLoadMore() {
 function renderImagesMarkup(hits) {
   const markup = hits
     .map(image => {
-      `<div class="photo-card">
+      return `<div class="photo-card">
     <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
     <div class="info">
       <p class="info-item">

@@ -12,9 +12,9 @@ export default class ImagesApiService {
     &orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`;
     return fetch(url)
       .then(response => response.json())
-      .then(data => {
+      .then(({ hits }) => {
         this.incrementPage();
-        return data.hits;
+        return hits;
       });
   }
 
