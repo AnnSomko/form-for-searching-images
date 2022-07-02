@@ -1,7 +1,7 @@
 import ImagesApiService from './imagesAPI';
-import { Notify } from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import { Notify } from 'notiflix';
 
 let searchForm = document.querySelector('#search-form');
 let imagesContainer = document.querySelector('.gallery');
@@ -22,16 +22,12 @@ function onSearch(e) {
   imagesApiService.fetchImages().then(hits => {
     clearImagesContainer();
     renderImagesMarkup(hits);
-    onSmoothSroll(hits);
     loadMore.hidden = false;
-    if (hits.length === 0) {
+    if ((hits = [])) {
       Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
-      return;
-    }
-    if (hits.totalHits) {
-      loadMore.hidden = true;
+    } else if (totalHits) {
       Notify.failure(
         "We're sorry, but you've reached the end of search results."
       );
@@ -46,8 +42,7 @@ function onLoadMore() {
 function renderImagesMarkup(hits) {
   const markup = hits
     .map(image => {
-      return `
-      <div class="photo-card">
+      return `<div class="photo-card">
       <a class="" href='${image.largeImageURL}'>               
         <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy" />
         </a>
@@ -79,7 +74,7 @@ function renderImagesMarkup(hits) {
 function clearImagesContainer() {
   imagesContainer.innerHTML = '';
 }
-
+/*
 function onSmoothSroll(hits) {
   const { height: cardHeight = hits.map(item => item.imageHeight) } = document
     .querySelector('.gallery')
@@ -90,3 +85,4 @@ function onSmoothSroll(hits) {
     behavior: 'smooth',
   });
 }
+*/
